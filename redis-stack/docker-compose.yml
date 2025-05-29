@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  redis-master:
+    image: redis/redis-stack-server:latest
+    container_name: redis-master
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis.conf:/redis-stack.conf
+    command: ["redis-server", "/redis-stack.conf"]
+
+  redis-replica:
+    image: redis/redis-stack-server:latest
+    container_name: redis-replica
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./redis-replica.conf:/redis-stack.conf
+    command: ["redis-server", "/redis-stack.conf"]
+    depends_on:
+      - redis-master

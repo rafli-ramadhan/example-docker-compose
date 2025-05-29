@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  sonarqube:
+    image: sonarqube:lts
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://@host.docker.internal:5432/sonarqube
+      SONAR_JDBC_USERNAME: postgres
+      SONAR_JDBC_PASSWORD: postgres

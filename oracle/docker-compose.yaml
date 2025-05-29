@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  db:
+    image: gvenzl/oracle-xe:11.2.0.2-slim-faststart
+    container_name: oracle
+    environment:
+      ORACLE_ALLOW_REMOTE: "true"
+      ORACLE_PASSWORD: system
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+
+volumes:
+  oracle_data:

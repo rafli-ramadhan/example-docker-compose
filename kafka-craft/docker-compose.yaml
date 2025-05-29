@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+  broker:
+    image: confluentinc/cp-kafka:latest
+    container_name: kraft-broker
+    hostname: kraft-broker
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      CLUSTER_ID: "qwerty-cluster-id"
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kraft-broker:9093"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://kraft-broker:29092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://kraft-broker:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kraft-broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    command: >
+      bash -c "
+        if [ ! -f /tmp/kraft-combined-logs/meta.properties ]; then
+          echo 'Formatting storage directory...';
+          kafka-storage format --ignore-formatted --cluster-id=qwerty-cluster-id --config /etc/kafka/kafka.properties;
+        fi;
+        /etc/confluent/docker/run
+      "
+    networks:
+      - kafka-kraft-network
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:latest
+    container_name: kraft-schema-registry
+    hostname: kraft-schema-registry
+    depends_on:
+      - broker
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: kraft-schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kraft-broker:29092
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    networks:
+      - kafka-kraft-network
+
+  akhq:
+    container_name: kraft-akhq
+    image: tchiotludo/akhq
+    ports:
+      - "29081:8080"
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          server:
+            servlet:
+              context-path: /
+          connections:
+            kraft-cluster:
+              properties:
+                bootstrap.servers: "kraft-broker:29092"
+              schema-registry:
+                url: "http://kraft-schema-registry:8081"
+    networks:
+      - kafka-kraft-network
+
+networks:
+  kafka-kraft-network:
+    driver: bridge
