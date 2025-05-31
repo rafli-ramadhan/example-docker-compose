@@ -12,5 +12,5 @@ A collection of Docker Compose configurations for popular services used in backe
 | Kafka (Confluent) | 9092     | Kafka broker using Confluent's Docker image                   |
 | Kafka Craft (Confluent) | 9092 | Kafka data integration and connector service                |
 | Redis           | 6379       | In-memory key-value store                                    |
-| Redis Insight   | 8001       | Web UI for monitoring and visualizing Redis                  |
+| Redis Insight   | 5540       | Web UI for monitoring and visualizing Redis                  |
 | SonarQube       | 9000       | Static code analysis and quality/security scanner            |
