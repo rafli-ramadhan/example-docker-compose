@@ -13,6 +13,6 @@ echo "Cleaning up old data directory..."
 rm -rf "$PGDATA"/*
 
 echo "Cloning data from master using pg_basebackup..."
-PGPASSWORD=replicatorpass pg_basebackup -h postgres-master -D "$PGDATA" -U replicator -Fp -Xs -P -R
+PGPASSWORD=postgres_replica_password pg_basebackup -h postgres-master -D "$PGDATA" -U replicator -Fp -Xs -P -R
 
 echo "Replication setup complete."

@@ -1,0 +1,1 @@
+CREATE ROLE replicator WITH REPLICATION LOGIN ENCRYPTED PASSWORD 'postgres_replica_password';
