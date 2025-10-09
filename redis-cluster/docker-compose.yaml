@@ -1,0 +1,43 @@
+
+version: '3.8'
+
+services:
+  redis-master-1:
+    image: redis:7.0
+    container_name: redis-master-1
+    command: ["redis-server", "/usr/local/etc/redis/redis-master-1.conf"]
+    volumes:
+      - ./redis-master-1.conf:/usr/local/etc/redis/redis-master-1.conf
+    ports:
+      - "7001:6379"
+      - "17001:16379"
+
+  redis-master-2:
+    image: redis:7.0
+    container_name: redis-master-2
+    command: ["redis-server", "/usr/local/etc/redis/redis-master-2.conf"]
+    volumes:
+      - ./redis-master-2.conf:/usr/local/etc/redis/redis-master-2.conf
+    ports:
+      - "7002:6379"
+      - "17002:16379"
+
+  redis-slave-1:
+    image: redis:7.0
+    container_name: redis-slave-1
+    command: ["redis-server", "/usr/local/etc/redis/redis-slave-1.conf"]
+    volumes:
+      - ./redis-slave-1.conf:/usr/local/etc/redis/redis-slave-1.conf
+    ports:
+      - "7004:6379"
+      - "17003:16379"
+
+  redis-slave-2:
+    image: redis:7.0
+    container_name: redis-slave-2
+    command: ["redis-server", "/usr/local/etc/redis/redis-slave-2.conf"]
+    volumes:
+      - ./redis-slave-2.conf:/usr/local/etc/redis/redis-slave-2.conf
+    ports:
+      - "7005:6379"
+      - "17004:16379"
