@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    container_name: rabbitmq_server
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin12345
+    ports:
+      # AMQP protocol port (used by applications/code to connect)
+      - "5672:5672"
+      # HTTP Management UI port (used by humans to view the dashboard)
+      - "15672:15672"
+    volumes:
+      # Persists rabbitmq data on your local machine
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  rabbitmq_data:
